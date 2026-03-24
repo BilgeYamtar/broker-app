@@ -1,0 +1,9 @@
+export const config = {
+  MAX_PHOTO_SIZE_MB: 1,
+  STALENESS_THRESHOLD_DAYS: 90,
+  SQLITE_DB_NAME: "yukportfoyu.db",
+  PHOTO_COMPRESSION_QUALITY: 0.7,
+  PHOTO_MAX_DIMENSION: 1920,
+  SEARCH_DEBOUNCE_MS: 300,
+  DEFAULT_LOCALE: "tr" as const,
+} as const;

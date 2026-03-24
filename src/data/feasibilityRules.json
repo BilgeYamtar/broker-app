@@ -1,0 +1,226 @@
+[
+  {
+    "cargoType": "Liquid Bulk",
+    "coatingType": "Stainless Steel",
+    "compatibility": true,
+    "scoreImpact": 95,
+    "flags": [],
+    "notes": "Stainless steel provides excellent resistance to liquid bulk cargoes including chemicals and vegetable oils."
+  },
+  {
+    "cargoType": "Liquid Bulk",
+    "coatingType": "Epoxy",
+    "compatibility": true,
+    "scoreImpact": 75,
+    "flags": ["Check cargo-specific epoxy resistance"],
+    "notes": "Standard epoxy coatings are suitable for many liquid bulk cargoes but may degrade with aggressive solvents."
+  },
+  {
+    "cargoType": "Liquid Bulk",
+    "coatingType": "Zinc Silicate",
+    "compatibility": false,
+    "scoreImpact": 25,
+    "flags": ["Zinc silicate reacts with acidic liquid cargoes"],
+    "notes": "Zinc silicate is not recommended for liquid bulk due to potential chemical reaction with acidic or alkaline cargoes."
+  },
+  {
+    "cargoType": "Liquid Bulk",
+    "coatingType": "Phenolic Epoxy",
+    "compatibility": true,
+    "scoreImpact": 90,
+    "flags": [],
+    "notes": "Phenolic epoxy offers superior chemical resistance, ideal for aggressive liquid cargoes."
+  },
+  {
+    "cargoType": "Dry Bulk",
+    "coatingType": "Stainless Steel",
+    "compatibility": true,
+    "scoreImpact": 85,
+    "flags": [],
+    "notes": "Stainless steel holds are suitable for dry bulk but represent overspecification for non-corrosive cargoes."
+  },
+  {
+    "cargoType": "Dry Bulk",
+    "coatingType": "Epoxy",
+    "compatibility": true,
+    "scoreImpact": 90,
+    "flags": [],
+    "notes": "Epoxy coatings provide good abrasion resistance for dry bulk cargoes like grain and minerals."
+  },
+  {
+    "cargoType": "Dry Bulk",
+    "coatingType": "Zinc Silicate",
+    "compatibility": true,
+    "scoreImpact": 80,
+    "flags": ["Monitor for abrasion wear on zinc silicate"],
+    "notes": "Zinc silicate is acceptable for dry bulk but less abrasion-resistant than epoxy for heavy granular cargoes."
+  },
+  {
+    "cargoType": "Dry Bulk",
+    "coatingType": "Phenolic Epoxy",
+    "compatibility": true,
+    "scoreImpact": 85,
+    "flags": [],
+    "notes": "Phenolic epoxy works well for dry bulk, though its chemical resistance advantages are underutilized."
+  },
+  {
+    "cargoType": "Containerized",
+    "coatingType": "Stainless Steel",
+    "compatibility": true,
+    "scoreImpact": 80,
+    "flags": [],
+    "notes": "Stainless steel holds are suitable for containerized cargo. No direct cargo-coating contact expected."
+  },
+  {
+    "cargoType": "Containerized",
+    "coatingType": "Epoxy",
+    "compatibility": true,
+    "scoreImpact": 90,
+    "flags": [],
+    "notes": "Epoxy is the standard coating for container vessel holds. Excellent durability and cost-effectiveness."
+  },
+  {
+    "cargoType": "Containerized",
+    "coatingType": "Zinc Silicate",
+    "compatibility": true,
+    "scoreImpact": 85,
+    "flags": [],
+    "notes": "Zinc silicate provides adequate protection for container holds with minimal direct cargo contact."
+  },
+  {
+    "cargoType": "Containerized",
+    "coatingType": "Phenolic Epoxy",
+    "compatibility": true,
+    "scoreImpact": 85,
+    "flags": [],
+    "notes": "Phenolic epoxy is acceptable but overspecified for standard containerized cargo."
+  },
+  {
+    "cargoType": "Break Bulk",
+    "coatingType": "Stainless Steel",
+    "compatibility": true,
+    "scoreImpact": 80,
+    "flags": [],
+    "notes": "Stainless steel is suitable for break bulk but may sustain surface marks from heavy lifts."
+  },
+  {
+    "cargoType": "Break Bulk",
+    "coatingType": "Epoxy",
+    "compatibility": true,
+    "scoreImpact": 85,
+    "flags": [],
+    "notes": "Epoxy provides good impact resistance for break bulk operations including steel coils and project cargo."
+  },
+  {
+    "cargoType": "Break Bulk",
+    "coatingType": "Zinc Silicate",
+    "compatibility": true,
+    "scoreImpact": 75,
+    "flags": ["Risk of coating damage from heavy break bulk items"],
+    "notes": "Zinc silicate may chip under heavy break bulk loading. Additional dunnage recommended."
+  },
+  {
+    "cargoType": "Break Bulk",
+    "coatingType": "Phenolic Epoxy",
+    "compatibility": true,
+    "scoreImpact": 80,
+    "flags": [],
+    "notes": "Phenolic epoxy provides adequate protection for break bulk cargo operations."
+  },
+  {
+    "cargoType": "Roll-on/Roll-off",
+    "coatingType": "Stainless Steel",
+    "compatibility": true,
+    "scoreImpact": 70,
+    "flags": ["Stainless steel decks may be slippery for wheeled cargo"],
+    "notes": "Stainless steel is not standard for RoRo operations. Anti-slip treatment may be required."
+  },
+  {
+    "cargoType": "Roll-on/Roll-off",
+    "coatingType": "Epoxy",
+    "compatibility": true,
+    "scoreImpact": 90,
+    "flags": [],
+    "notes": "Epoxy with anti-slip aggregate is the standard coating for RoRo decks and ramps."
+  },
+  {
+    "cargoType": "Roll-on/Roll-off",
+    "coatingType": "Zinc Silicate",
+    "compatibility": false,
+    "scoreImpact": 30,
+    "flags": ["Zinc silicate cannot withstand wheeled traffic abrasion"],
+    "notes": "Zinc silicate is not suitable for RoRo operations due to rapid coating degradation from vehicle traffic."
+  },
+  {
+    "cargoType": "Roll-on/Roll-off",
+    "coatingType": "Phenolic Epoxy",
+    "compatibility": true,
+    "scoreImpact": 80,
+    "flags": [],
+    "notes": "Phenolic epoxy offers good abrasion resistance for RoRo operations but is less cost-effective than standard epoxy."
+  },
+  {
+    "cargoType": "Refrigerated",
+    "coatingType": "Stainless Steel",
+    "compatibility": true,
+    "scoreImpact": 90,
+    "flags": [],
+    "notes": "Stainless steel is ideal for refrigerated cargo holds, withstanding thermal cycling and condensation."
+  },
+  {
+    "cargoType": "Refrigerated",
+    "coatingType": "Epoxy",
+    "compatibility": true,
+    "scoreImpact": 75,
+    "flags": ["Monitor epoxy integrity under thermal cycling"],
+    "notes": "Standard epoxy may develop micro-cracks under repeated thermal cycling in reefer holds."
+  },
+  {
+    "cargoType": "Refrigerated",
+    "coatingType": "Zinc Silicate",
+    "compatibility": false,
+    "scoreImpact": 20,
+    "flags": ["Zinc silicate degrades under condensation and thermal stress"],
+    "notes": "Zinc silicate fails under refrigerated conditions due to moisture condensation and thermal expansion mismatch."
+  },
+  {
+    "cargoType": "Refrigerated",
+    "coatingType": "Phenolic Epoxy",
+    "compatibility": true,
+    "scoreImpact": 85,
+    "flags": [],
+    "notes": "Phenolic epoxy performs well in refrigerated holds with good condensation resistance."
+  },
+  {
+    "cargoType": "Gas",
+    "coatingType": "Stainless Steel",
+    "compatibility": true,
+    "scoreImpact": 95,
+    "flags": [],
+    "notes": "Stainless steel tanks are the standard for LPG/LNG carriers. Excellent cryogenic properties."
+  },
+  {
+    "cargoType": "Gas",
+    "coatingType": "Epoxy",
+    "compatibility": false,
+    "scoreImpact": 15,
+    "flags": ["Epoxy cannot withstand cryogenic temperatures"],
+    "notes": "Standard epoxy coatings become brittle and fail at cryogenic temperatures required for gas cargo."
+  },
+  {
+    "cargoType": "Gas",
+    "coatingType": "Zinc Silicate",
+    "compatibility": false,
+    "scoreImpact": 10,
+    "flags": ["Zinc silicate fails at cryogenic temperatures"],
+    "notes": "Zinc silicate is completely unsuitable for gas carrier tanks due to cryogenic brittleness."
+  },
+  {
+    "cargoType": "Gas",
+    "coatingType": "Phenolic Epoxy",
+    "compatibility": false,
+    "scoreImpact": 20,
+    "flags": ["Phenolic epoxy not rated for cryogenic service"],
+    "notes": "Phenolic epoxy lacks cryogenic certification required for LPG/LNG containment systems."
+  }
+]
