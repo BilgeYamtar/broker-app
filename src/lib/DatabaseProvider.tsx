@@ -15,15 +15,29 @@ interface DatabaseProviderProps {
 export function DatabaseProvider({ children }: DatabaseProviderProps) {
   const [db, setDb] = useState<SQLite.SQLiteDatabase | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const hasSeeded = useOnboardingStore((s) => s.hasSeeded);
-  const markSeeded = useOnboardingStore((s) => s.markSeeded);
+  const [hydrated, setHydrated] = useState(false);
+
+  // Wait for Zustand persist to rehydrate from AsyncStorage
+  useEffect(() => {
+    const unsub = useOnboardingStore.persist.onFinishHydration(() => {
+      setHydrated(true);
+    });
+    // If already hydrated (e.g. sync storage or fast resolve)
+    if (useOnboardingStore.persist.hasHydrated()) {
+      setHydrated(true);
+    }
+    return () => { unsub(); };
+  }, []);
 
   useEffect(() => {
+    if (!hydrated) return;
+
     (async () => {
       try {
         const database = await getDatabase();
 
         // Seed demo data on first launch
+        const { hasSeeded, markSeeded } = useOnboardingStore.getState();
         if (!hasSeeded) {
           await seedDemoData();
           markSeeded();
@@ -35,7 +49,7 @@ export function DatabaseProvider({ children }: DatabaseProviderProps) {
         setError(err instanceof Error ? err.message : "Database init failed");
       }
     })();
-  }, []);
+  }, [hydrated]);
 
   if (error) {
     return (
