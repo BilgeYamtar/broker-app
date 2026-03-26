@@ -15,41 +15,52 @@ interface DatabaseProviderProps {
 export function DatabaseProvider({ children }: DatabaseProviderProps) {
   const [db, setDb] = useState<SQLite.SQLiteDatabase | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [hydrated, setHydrated] = useState(false);
-
-  // Wait for Zustand persist to rehydrate from AsyncStorage
-  useEffect(() => {
-    const unsub = useOnboardingStore.persist.onFinishHydration(() => {
-      setHydrated(true);
-    });
-    // If already hydrated (e.g. sync storage or fast resolve)
-    if (useOnboardingStore.persist.hasHydrated()) {
-      setHydrated(true);
-    }
-    return () => { unsub(); };
-  }, []);
 
   useEffect(() => {
-    if (!hydrated) return;
+    let cancelled = false;
 
-    (async () => {
+    async function init() {
       try {
-        const database = await getDatabase();
+        // 1. Open DB synchronously — no async race
+        const database = getDatabase();
 
-        // Seed demo data on first launch
-        const { hasSeeded, markSeeded } = useOnboardingStore.getState();
-        if (!hasSeeded) {
-          await seedDemoData();
-          markSeeded();
+        // 2. Wait for Zustand persist hydration before checking hasSeeded
+        if (!useOnboardingStore.persist.hasHydrated()) {
+          await new Promise<void>((resolve) => {
+            const unsub = useOnboardingStore.persist.onFinishHydration(() => {
+              unsub();
+              resolve();
+            });
+          });
         }
 
+        if (cancelled) return;
+
+        // 3. Seed demo data on first launch
+        const { hasSeeded, markSeeded } = useOnboardingStore.getState();
+        if (!hasSeeded) {
+          try {
+            await seedDemoData();
+            markSeeded();
+          } catch (seedErr) {
+            console.warn("Demo data seeding failed:", seedErr);
+            // Non-fatal — continue without demo data
+            markSeeded(); // Prevent retry loops
+          }
+        }
+
+        if (cancelled) return;
         setDb(database);
       } catch (err) {
+        if (cancelled) return;
         console.error("Database initialization failed:", err);
         setError(err instanceof Error ? err.message : "Database init failed");
       }
-    })();
-  }, [hydrated]);
+    }
+
+    init();
+    return () => { cancelled = true; };
+  }, []);
 
   if (error) {
     return (
