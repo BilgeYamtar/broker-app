@@ -98,7 +98,7 @@ export function VesselForm({ initialData, vesselId }: VesselFormProps) {
       clearDraft();
       router.back();
     } else {
-      Alert.alert(t("common.error"), t("errors.saveFailed"));
+      Alert.alert(t("common.error"), result.error);
     }
   };
 

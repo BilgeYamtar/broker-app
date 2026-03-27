@@ -30,19 +30,14 @@ export async function createPhoto(params: {
   isDemo?: boolean;
 }): Promise<Result<Photo>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const id = crypto.randomUUID();
     const now = new Date().toISOString();
 
     await db.runAsync(
       `INSERT INTO photos (id, uri, vessel_id, broker_note_id, is_demo, created_at)
        VALUES (?, ?, ?, ?, ?, ?)`,
-      id,
-      params.uri,
-      params.vesselId ?? null,
-      params.brokerNoteId ?? null,
-      params.isDemo ? 1 : 0,
-      now
+      [id, params.uri, params.vesselId ?? null, params.brokerNoteId ?? null, params.isDemo ? 1 : 0, now]
     );
 
     const photo: Photo = {
@@ -67,10 +62,10 @@ export async function getPhotosByVesselId(
   vesselId: string
 ): Promise<Result<Photo[]>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const rows = await db.getAllAsync<PhotoRow>(
       "SELECT * FROM photos WHERE vessel_id = ? ORDER BY created_at DESC",
-      vesselId
+      [vesselId]
     );
 
     return { success: true, data: rows.map(rowToPhoto) };
@@ -86,10 +81,10 @@ export async function getPhotosByBrokerNoteId(
   brokerNoteId: string
 ): Promise<Result<Photo[]>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const rows = await db.getAllAsync<PhotoRow>(
       "SELECT * FROM photos WHERE broker_note_id = ? ORDER BY created_at DESC",
-      brokerNoteId
+      [brokerNoteId]
     );
 
     return { success: true, data: rows.map(rowToPhoto) };
@@ -105,7 +100,7 @@ export async function getAllPhotosForVessel(
   vesselId: string
 ): Promise<Result<Photo[]>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const rows = await db.getAllAsync<PhotoRow>(
       `SELECT p.* FROM photos p
        WHERE p.vessel_id = ?
@@ -114,8 +109,7 @@ export async function getAllPhotosForVessel(
        INNER JOIN broker_notes bn ON p.broker_note_id = bn.id
        WHERE bn.vessel_id = ?
        ORDER BY created_at DESC`,
-      vesselId,
-      vesselId
+      [vesselId, vesselId]
     );
 
     return { success: true, data: rows.map(rowToPhoto) };
@@ -129,19 +123,19 @@ export async function getAllPhotosForVessel(
 
 export async function deletePhoto(id: string): Promise<Result<void>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
 
     // Fetch URI first so we can delete the file
     const row = await db.getFirstAsync<PhotoRow>(
       "SELECT * FROM photos WHERE id = ?",
-      id
+      [id]
     );
 
     if (!row) {
       return { success: false, error: "Photo not found" };
     }
 
-    await db.runAsync("DELETE FROM photos WHERE id = ?", id);
+    await db.runAsync("DELETE FROM photos WHERE id = ?", [id]);
 
     // Best-effort file cleanup
     deletePhotoFile(row.uri);

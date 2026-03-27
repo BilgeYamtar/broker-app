@@ -61,7 +61,7 @@ export async function createVessel(
   }
 
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const id = crypto.randomUUID();
     const now = new Date().toISOString();
     const d = parsed.data;
@@ -69,24 +69,7 @@ export async function createVessel(
     await db.runAsync(
       `INSERT INTO vessels (id, vessel_name, imo_number, built_year, dwt_capacity, length_m, beam_m, depth_m, gross_tonnage, net_tonnage, classification_society, pi_club, vessel_type, coating_type, is_active, is_demo, created_at, updated_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      id,
-      d.vesselName,
-      d.imoNumber,
-      d.builtYear,
-      d.dwtCapacity,
-      d.lengthM,
-      d.beamM,
-      d.depthM,
-      d.grossTonnage,
-      d.netTonnage,
-      d.classificationSociety,
-      d.piClub,
-      d.vesselType,
-      d.coatingType,
-      1,
-      isDemo ? 1 : 0,
-      now,
-      now
+      [id, d.vesselName, d.imoNumber, d.builtYear, d.dwtCapacity, d.lengthM, d.beamM, d.depthM, d.grossTonnage, d.netTonnage, d.classificationSociety, d.piClub, d.vesselType, d.coatingType, 1, isDemo ? 1 : 0, now, now]
     );
 
     const vessel: Vessel = {
@@ -121,10 +104,10 @@ export async function createVessel(
 
 export async function getVesselById(id: string): Promise<Result<Vessel>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const row = await db.getFirstAsync<VesselRow>(
       "SELECT * FROM vessels WHERE id = ?",
-      id
+      [id]
     );
 
     if (!row) {
@@ -142,7 +125,7 @@ export async function getVesselById(id: string): Promise<Result<Vessel>> {
 
 export async function getAllVessels(): Promise<Result<Vessel[]>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const rows = await db.getAllAsync<VesselRow>(
       "SELECT * FROM vessels ORDER BY updated_at DESC"
     );
@@ -166,28 +149,14 @@ export async function updateVessel(
   }
 
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const now = new Date().toISOString();
     const d = parsed.data;
 
     const result = await db.runAsync(
       `UPDATE vessels SET vessel_name = ?, imo_number = ?, built_year = ?, dwt_capacity = ?, length_m = ?, beam_m = ?, depth_m = ?, gross_tonnage = ?, net_tonnage = ?, classification_society = ?, pi_club = ?, vessel_type = ?, coating_type = ?, updated_at = ?
        WHERE id = ?`,
-      d.vesselName,
-      d.imoNumber,
-      d.builtYear,
-      d.dwtCapacity,
-      d.lengthM,
-      d.beamM,
-      d.depthM,
-      d.grossTonnage,
-      d.netTonnage,
-      d.classificationSociety,
-      d.piClub,
-      d.vesselType,
-      d.coatingType,
-      now,
-      id
+      [d.vesselName, d.imoNumber, d.builtYear, d.dwtCapacity, d.lengthM, d.beamM, d.depthM, d.grossTonnage, d.netTonnage, d.classificationSociety, d.piClub, d.vesselType, d.coatingType, now, id]
     );
 
     if (result.changes === 0) {
@@ -210,10 +179,10 @@ export async function updateVessel(
 
 export async function deleteVessel(id: string): Promise<Result<void>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const result = await db.runAsync(
       "DELETE FROM vessels WHERE id = ?",
-      id
+      [id]
     );
 
     if (result.changes === 0) {

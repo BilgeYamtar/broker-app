@@ -82,7 +82,7 @@ export default function FeasibilityScreen() {
     setRunning(false);
 
     if (!saveRes.success) {
-      Alert.alert(t("common.error"), t("errors.saveFailed"));
+      Alert.alert(t("common.error"), saveRes.error);
       return;
     }
 

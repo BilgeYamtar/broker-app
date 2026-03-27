@@ -43,7 +43,7 @@ export async function create(
   isDemo = false
 ): Promise<Result<FeasibilityResult>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const id = crypto.randomUUID();
     const now = new Date().toISOString();
 
@@ -52,18 +52,7 @@ export async function create(
         (id, vessel_id, cargo_id, overall_score, hull_integrity_score, thermal_score,
          eca_compliance_score, fts_status, flags, flag_details, is_demo, created_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      id,
-      data.vesselId,
-      data.cargoId,
-      data.overallScore,
-      data.hullIntegrityScore,
-      data.thermalScore,
-      data.ecaComplianceScore,
-      data.ftsStatus,
-      JSON.stringify(data.flags),
-      JSON.stringify(data.flagDetails),
-      isDemo ? 1 : 0,
-      now
+      [id, data.vesselId, data.cargoId, data.overallScore, data.hullIntegrityScore, data.thermalScore, data.ecaComplianceScore, data.ftsStatus, JSON.stringify(data.flags), JSON.stringify(data.flagDetails), isDemo ? 1 : 0, now]
     );
 
     const result: FeasibilityResult = {
@@ -87,10 +76,10 @@ export async function getById(
   id: string
 ): Promise<Result<FeasibilityResult>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const row = await db.getFirstAsync<FeasibilityRow>(
       "SELECT * FROM feasibility_results WHERE id = ?",
-      id
+      [id]
     );
 
     if (!row) {
@@ -109,7 +98,7 @@ export async function getById(
 
 export async function getAll(): Promise<Result<FeasibilityResult[]>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const rows = await db.getAllAsync<FeasibilityRow>(
       "SELECT * FROM feasibility_results ORDER BY created_at DESC"
     );
@@ -130,10 +119,10 @@ export async function getByVesselId(
   vesselId: string
 ): Promise<Result<FeasibilityResult[]>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const rows = await db.getAllAsync<FeasibilityRow>(
       "SELECT * FROM feasibility_results WHERE vessel_id = ? ORDER BY created_at DESC",
-      vesselId
+      [vesselId]
     );
 
     return { success: true, data: rows.map(rowToResult) };
@@ -152,10 +141,10 @@ export async function getByCargoId(
   cargoId: string
 ): Promise<Result<FeasibilityResult[]>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const rows = await db.getAllAsync<FeasibilityRow>(
       "SELECT * FROM feasibility_results WHERE cargo_id = ? ORDER BY created_at DESC",
-      cargoId
+      [cargoId]
     );
 
     return { success: true, data: rows.map(rowToResult) };

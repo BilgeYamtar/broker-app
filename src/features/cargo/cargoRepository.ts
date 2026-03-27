@@ -42,7 +42,7 @@ export async function createCargo(
   }
 
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const id = crypto.randomUUID();
     const now = new Date().toISOString();
     const d = parsed.data;
@@ -50,17 +50,7 @@ export async function createCargo(
     await db.runAsync(
       `INSERT INTO cargoes (id, cargo_name, cargo_type, weight_mt, volume_cbm, hazard_class, temperature_control, ventilation, is_demo, created_at, updated_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      id,
-      d.cargoName,
-      d.cargoType,
-      d.weightMt,
-      d.volumeCbm,
-      d.hazardClass,
-      d.temperatureControl ? 1 : 0,
-      d.ventilation ? 1 : 0,
-      isDemo ? 1 : 0,
-      now,
-      now
+      [id, d.cargoName, d.cargoType, d.weightMt, d.volumeCbm, d.hazardClass, d.temperatureControl ? 1 : 0, d.ventilation ? 1 : 0, isDemo ? 1 : 0, now, now]
     );
 
     const cargo: Cargo = {
@@ -88,10 +78,10 @@ export async function createCargo(
 
 export async function getCargoById(id: string): Promise<Result<Cargo>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const row = await db.getFirstAsync<CargoRow>(
       "SELECT * FROM cargoes WHERE id = ?",
-      id
+      [id]
     );
 
     if (!row) {
@@ -109,7 +99,7 @@ export async function getCargoById(id: string): Promise<Result<Cargo>> {
 
 export async function getAllCargoes(): Promise<Result<Cargo[]>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const rows = await db.getAllAsync<CargoRow>(
       "SELECT * FROM cargoes ORDER BY updated_at DESC"
     );
@@ -133,22 +123,14 @@ export async function updateCargo(
   }
 
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const now = new Date().toISOString();
     const d = parsed.data;
 
     const result = await db.runAsync(
       `UPDATE cargoes SET cargo_name = ?, cargo_type = ?, weight_mt = ?, volume_cbm = ?, hazard_class = ?, temperature_control = ?, ventilation = ?, updated_at = ?
        WHERE id = ?`,
-      d.cargoName,
-      d.cargoType,
-      d.weightMt,
-      d.volumeCbm,
-      d.hazardClass,
-      d.temperatureControl ? 1 : 0,
-      d.ventilation ? 1 : 0,
-      now,
-      id
+      [d.cargoName, d.cargoType, d.weightMt, d.volumeCbm, d.hazardClass, d.temperatureControl ? 1 : 0, d.ventilation ? 1 : 0, now, id]
     );
 
     if (result.changes === 0) {
@@ -171,10 +153,10 @@ export async function updateCargo(
 
 export async function deleteCargo(id: string): Promise<Result<void>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const result = await db.runAsync(
       "DELETE FROM cargoes WHERE id = ?",
-      id
+      [id]
     );
 
     if (result.changes === 0) {

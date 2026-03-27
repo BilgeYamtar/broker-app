@@ -40,7 +40,7 @@ export async function createBrokerNote(
   }
 
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const id = crypto.randomUUID();
     const now = new Date().toISOString();
     const d = parsed.data;
@@ -48,14 +48,7 @@ export async function createBrokerNote(
     await db.runAsync(
       `INSERT INTO broker_notes (id, vessel_id, note_text, captain_name, source_name, is_demo, created_at, updated_at)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`,
-      id,
-      d.vesselId,
-      d.noteText,
-      d.captainName ?? null,
-      d.sourceName ?? null,
-      isDemo ? 1 : 0,
-      now,
-      now
+      [id, d.vesselId, d.noteText, d.captainName ?? null, d.sourceName ?? null, isDemo ? 1 : 0, now, now]
     );
 
     const note: BrokerNote = {
@@ -83,10 +76,10 @@ export async function getBrokerNoteById(
   id: string
 ): Promise<Result<BrokerNote>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const row = await db.getFirstAsync<BrokerNoteRow>(
       "SELECT * FROM broker_notes WHERE id = ?",
-      id
+      [id]
     );
 
     if (!row) {
@@ -107,10 +100,10 @@ export async function getByVesselId(
   vesselId: string
 ): Promise<Result<BrokerNote[]>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const rows = await db.getAllAsync<BrokerNoteRow>(
       "SELECT * FROM broker_notes WHERE vessel_id = ? ORDER BY updated_at DESC",
-      vesselId
+      [vesselId]
     );
 
     return { success: true, data: rows.map(rowToNote) };
@@ -125,7 +118,7 @@ export async function getByVesselId(
 
 export async function getAllBrokerNotes(): Promise<Result<BrokerNote[]>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const rows = await db.getAllAsync<BrokerNoteRow>(
       "SELECT * FROM broker_notes ORDER BY updated_at DESC"
     );
@@ -150,18 +143,14 @@ export async function updateBrokerNote(
   }
 
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const now = new Date().toISOString();
     const d = parsed.data;
 
     const result = await db.runAsync(
       `UPDATE broker_notes SET note_text = ?, captain_name = ?, source_name = ?, updated_at = ?
        WHERE id = ?`,
-      d.noteText,
-      d.captainName ?? null,
-      d.sourceName ?? null,
-      now,
-      id
+      [d.noteText, d.captainName ?? null, d.sourceName ?? null, now, id]
     );
 
     if (result.changes === 0) {
@@ -185,10 +174,10 @@ export async function updateBrokerNote(
 
 export async function deleteBrokerNote(id: string): Promise<Result<void>> {
   try {
-    const db = await getDatabase();
+    const db = getDatabase();
     const result = await db.runAsync(
       "DELETE FROM broker_notes WHERE id = ?",
-      id
+      [id]
     );
 
     if (result.changes === 0) {
