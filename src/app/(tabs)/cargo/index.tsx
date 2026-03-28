@@ -1,5 +1,5 @@
 import { useEffect, useCallback, useMemo } from "react";
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { useRouter } from "expo-router";
 import { FlashList } from "@shopify/flash-list";
 import { ScreenContainer } from "@/components/layout/ScreenContainer";
@@ -77,9 +77,17 @@ export default function CargoScreen() {
             onValueChange={setHazardClass}
           />
         </View>
+        <Pressable
+          onPress={() => router.push("/cargo/imdg")}
+          className="mt-2 flex-row items-center justify-center rounded-lg border border-maritime-border bg-maritime-surface py-2.5 px-3"
+        >
+          <Text className="text-maritime-teal text-xs font-medium">
+            {"\u2622\uFE0F"} {t("imdg.guideButton")}
+          </Text>
+        </Pressable>
       </View>
     ),
-    [filters.search, filters.cargoType, filters.hazardClass, t]
+    [filters.search, filters.cargoType, filters.hazardClass, t, router]
   );
 
   return (

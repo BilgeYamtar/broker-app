@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { View, Text, ScrollView } from "react-native";
+import { useRouter, type RelativePathString } from "expo-router";
 import { ScreenContainer } from "@/components/layout/ScreenContainer";
 import { Header } from "@/components/layout/Header";
 import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
@@ -29,6 +30,7 @@ function formatDuration(hours: number): string {
 
 export default function RoutePlanningScreen() {
   const { t } = useI18n();
+  const router = useRouter();
 
   const [originPort, setOriginPort] = useState<Port | null>(null);
   const [destinationPort, setDestinationPort] = useState<Port | null>(null);
@@ -272,6 +274,25 @@ export default function RoutePlanningScreen() {
                   </View>
                 </View>
               </Card>
+
+              {/* Pre-Voyage Estimation */}
+              <View className="mb-4">
+                <Button
+                  label={t("prevoyage.openButton")}
+                  onPress={() => {
+                    router.push({
+                      pathname: "/route/prevoyage" as RelativePathString,
+                      params: {
+                        distance: String(result.distanceNm),
+                        origin: originPort?.name ?? "",
+                        destination: destinationPort?.name ?? "",
+                      },
+                    });
+                  }}
+                  variant="secondary"
+                  fullWidth
+                />
+              </View>
 
               {/* Disclaimer */}
               <View className="items-center py-4 mb-8">

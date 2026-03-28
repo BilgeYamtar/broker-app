@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { View, Alert } from "react-native";
+import { View, Text, Alert, Pressable } from "react-native";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { ScreenContainer } from "@/components/layout/ScreenContainer";
 import { Header } from "@/components/layout/Header";
@@ -84,6 +84,21 @@ export default function CargoDetailScreen() {
         <Header title={t("cargo.editCargoTitle")} showBack />
         {initialData && (
           <CargoForm initialData={initialData} cargoId={id} />
+        )}
+        {initialData && initialData.hazardClass !== "Non-Hazardous" && (
+          <View className="px-4 mb-4">
+            <Pressable
+              onPress={() => {
+                const classNum = initialData.hazardClass.replace("Class ", "");
+                router.push(`/cargo/imdg?highlight=${classNum}`);
+              }}
+              className="flex-row items-center justify-center rounded-lg border border-maritime-border bg-maritime-surface py-3 px-3"
+            >
+              <Text className="text-maritime-teal text-xs font-medium">
+                {"\u2622\uFE0F"} {t("imdg.viewGuideForClass")}
+              </Text>
+            </Pressable>
+          </View>
         )}
         <View className="px-4 mb-8">
           <Button
