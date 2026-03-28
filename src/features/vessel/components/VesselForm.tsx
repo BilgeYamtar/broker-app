@@ -1,5 +1,14 @@
-import { useEffect, useCallback } from "react";
-import { View, ScrollView, Alert, Text } from "react-native";
+import { useEffect, useCallback, useState, useMemo } from "react";
+import {
+  View,
+  ScrollView,
+  Alert,
+  Text,
+  Pressable,
+  TextInput,
+  Modal,
+  FlatList,
+} from "react-native";
 import { useRouter } from "expo-router";
 import { Input } from "@/components/ui/Input";
 import { Select } from "@/components/ui/Select";
@@ -10,6 +19,7 @@ import { classificationSocieties } from "@/data/classificationSocieties";
 import { piClubs } from "@/data/piClubs";
 import { vesselTypes } from "@/data/vesselTypes";
 import { coatingTypes } from "@/data/coatingTypes";
+import { coastalNations } from "@/data/coastalNations";
 import { vesselFormSchema, type VesselFormData } from "../vesselSchemas";
 import { useVesselStore } from "../useVesselStore";
 
@@ -34,6 +44,9 @@ export function VesselForm({ initialData, vesselId }: VesselFormProps) {
   const clearDraft = useVesselStore((s) => s.clearDraft);
   const saveVessel = useVesselStore((s) => s.saveVessel);
   const updateVesselAction = useVesselStore((s) => s.updateVessel);
+
+  const [flagPickerOpen, setFlagPickerOpen] = useState(false);
+  const [flagSearch, setFlagSearch] = useState("");
 
   const isEditing = !!vesselId;
 
@@ -82,11 +95,14 @@ export function VesselForm({ initialData, vesselId }: VesselFormProps) {
         "Chemical Tanker") as VesselFormData["vesselType"],
       coatingType: (draft.coatingType ??
         "Epoxy") as VesselFormData["coatingType"],
+      flag: draft.flag ?? null,
     };
 
     const parsed = vesselFormSchema.safeParse(formData);
     if (!parsed.success) {
-      Alert.alert(t("common.error"), t("errors.validationFailed"));
+      const messages = parsed.error.issues.map((issue) => issue.message);
+      const unique = [...new Set(messages)];
+      Alert.alert(t("common.error"), unique.join("\n"));
       return;
     }
 
@@ -108,6 +124,18 @@ export function VesselForm({ initialData, vesselId }: VesselFormProps) {
     }
     router.back();
   };
+
+  // Flag picker helpers
+  const selectedNation = coastalNations.find((n) => n.code === draft.flag);
+
+  const filteredNations = useMemo(() => {
+    if (!flagSearch.trim()) return [...coastalNations];
+    const q = flagSearch.toLowerCase();
+    return coastalNations.filter(
+      (n) =>
+        n.name.toLowerCase().includes(q) || n.code.toLowerCase().includes(q)
+    );
+  }, [flagSearch]);
 
   return (
     <ScrollView className="flex-1" keyboardShouldPersistTaps="handled">
@@ -164,6 +192,30 @@ export function VesselForm({ initialData, vesselId }: VesselFormProps) {
               placeholder={t("common.select")}
             />
           </View>
+        </View>
+
+        {/* Flag / Country Picker */}
+        <View className="mt-2">
+          <Text className="text-maritime-muted text-xs mb-1.5">
+            {t("vessels.flag")}
+          </Text>
+          <Pressable
+            onPress={() => {
+              setFlagSearch("");
+              setFlagPickerOpen(true);
+            }}
+            className="min-h-[44px] rounded-lg border border-maritime-border bg-maritime-surface px-3 justify-center"
+          >
+            {selectedNation ? (
+              <Text className="text-maritime-white text-sm">
+                {selectedNation.flag} {selectedNation.name}
+              </Text>
+            ) : (
+              <Text className="text-maritime-muted text-sm">
+                {t("vessels.flagPlaceholder")}
+              </Text>
+            )}
+          </Pressable>
         </View>
       </Card>
 
@@ -278,6 +330,72 @@ export function VesselForm({ initialData, vesselId }: VesselFormProps) {
           />
         </View>
       </View>
+
+      {/* Flag Picker Modal */}
+      <Modal
+        visible={flagPickerOpen}
+        animationType="slide"
+        presentationStyle="pageSheet"
+        onRequestClose={() => setFlagPickerOpen(false)}
+      >
+        <View className="flex-1 bg-maritime-bg">
+          {/* Header */}
+          <View className="flex-row items-center justify-between px-4 pt-4 pb-2">
+            <Text className="text-maritime-white text-lg font-semibold">
+              {t("vessels.flag")}
+            </Text>
+            <Pressable onPress={() => setFlagPickerOpen(false)}>
+              <Text className="text-maritime-teal text-sm font-medium">
+                {t("common.done")}
+              </Text>
+            </Pressable>
+          </View>
+
+          {/* Search */}
+          <View className="px-4 pb-2">
+            <TextInput
+              value={flagSearch}
+              onChangeText={setFlagSearch}
+              placeholder={t("common.search")}
+              placeholderTextColor="#6B7280"
+              className="h-10 rounded-lg border border-maritime-border bg-maritime-surface px-3 text-maritime-white text-sm"
+              autoFocus
+            />
+          </View>
+
+          {/* List */}
+          <FlatList
+            data={filteredNations}
+            keyExtractor={(item) => item.code}
+            renderItem={({ item }) => (
+              <Pressable
+                onPress={() => {
+                  setField("flag", item.code);
+                  setFlagPickerOpen(false);
+                }}
+                className={`flex-row items-center px-4 py-3 border-b border-maritime-border ${
+                  draft.flag === item.code ? "bg-maritime-teal-bg" : ""
+                }`}
+              >
+                <Text className="text-lg mr-3">{item.flag}</Text>
+                <Text className="text-maritime-white text-sm flex-1">
+                  {item.name}
+                </Text>
+                <Text className="text-maritime-muted text-xs">
+                  {item.code}
+                </Text>
+              </Pressable>
+            )}
+            ListEmptyComponent={
+              <View className="items-center py-8">
+                <Text className="text-maritime-muted text-sm">
+                  {t("common.noResults")}
+                </Text>
+              </View>
+            }
+          />
+        </View>
+      </Modal>
     </ScrollView>
   );
 }

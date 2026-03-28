@@ -1,5 +1,6 @@
 import { getDatabase } from "@/lib/database";
 import type { Result } from "@/lib/result";
+import { generateUUID } from "@/utils/uuid";
 import type { Photo } from "./photoSchemas";
 import { deletePhotoFile } from "@/utils/photoUtils";
 
@@ -31,7 +32,7 @@ export async function createPhoto(params: {
 }): Promise<Result<Photo>> {
   try {
     const db = getDatabase();
-    const id = crypto.randomUUID();
+    const id = generateUUID();
     const now = new Date().toISOString();
 
     await db.runAsync(

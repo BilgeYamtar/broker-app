@@ -18,6 +18,7 @@ export function getDatabase(): SQLite.SQLiteDatabase {
 
   createTables(db);
   createIndexes(db);
+  runMigrations(db);
 
   return db;
 }
@@ -127,6 +128,15 @@ function createIndexes(db: SQLite.SQLiteDatabase): void {
 
   db.execSync(`CREATE INDEX IF NOT EXISTS idx_photos_vessel_id ON photos(vessel_id);`);
   db.execSync(`CREATE INDEX IF NOT EXISTS idx_photos_broker_note_id ON photos(broker_note_id);`);
+}
+
+function runMigrations(db: SQLite.SQLiteDatabase): void {
+  // Migration 1: Add flag column to vessels (v1.1)
+  try {
+    db.execSync(`ALTER TABLE vessels ADD COLUMN flag TEXT;`);
+  } catch {
+    // Column already exists — safe to ignore
+  }
 }
 
 export function closeDatabase(): void {

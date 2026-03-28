@@ -11,7 +11,7 @@ import { useVesselStore } from "@/features/vessel/useVesselStore";
 import { useFeasibilityStore } from "@/features/feasibility/useFeasibilityStore";
 import { CargoVesselSelector } from "@/features/feasibility/components/CargoVesselSelector";
 import { runFeasibility } from "@/services/feasibilityService";
-import type { FeasibilityRule } from "@/services/feasibilityService";
+import type { FeasibilityRule, MessageFormatter } from "@/services/feasibilityService";
 import rules from "@/data/feasibilityRules.json";
 
 const typedRules = rules as FeasibilityRule[];
@@ -49,6 +49,17 @@ export default function FeasibilityScreen() {
 
     setRunning(true);
 
+    // Build locale-aware message formatter
+    const msg: MessageFormatter = (key, params) => {
+      let template = t(`feasibility.${key}` as Parameters<typeof t>[0]);
+      if (params) {
+        for (const [k, v] of Object.entries(params)) {
+          template = template.replace(`{${k}}`, String(v));
+        }
+      }
+      return template;
+    };
+
     // 1. Run pure feasibility engine
     const engineResult = runFeasibility(
       {
@@ -64,7 +75,8 @@ export default function FeasibilityScreen() {
         builtYear: vessel.builtYear,
         dwtCapacity: vessel.dwtCapacity,
       },
-      typedRules
+      typedRules,
+      msg
     );
 
     if (!engineResult.success) {

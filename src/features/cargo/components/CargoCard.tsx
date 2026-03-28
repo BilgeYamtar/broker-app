@@ -4,6 +4,16 @@ import { Badge } from "@/components/ui/Badge";
 import { useI18n } from "@/lib/i18n";
 import type { Cargo } from "../cargoSchemas";
 
+const CARGO_TYPE_ICONS: Record<string, string> = {
+  "Liquid Bulk": "🛢️",
+  "Dry Bulk": "🪨",
+  "Containerized": "📦",
+  "Break Bulk": "🔩",
+  "Roll-on/Roll-off": "🚗",
+  "Refrigerated": "❄️",
+  "Gas": "💨",
+};
+
 interface CargoCardProps {
   cargo: Cargo;
   onPress: () => void;
@@ -29,7 +39,7 @@ export function CargoCard({ cargo, onPress }: CargoCardProps) {
             {cargo.cargoName}
           </Text>
           <Text className="text-maritime-muted text-sm mt-1">
-            {cargo.cargoType}
+            {CARGO_TYPE_ICONS[cargo.cargoType] ?? "📋"} {cargo.cargoType}
           </Text>
         </View>
         <Badge

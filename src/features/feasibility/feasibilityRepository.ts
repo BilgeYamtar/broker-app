@@ -1,5 +1,6 @@
 import { getDatabase } from "@/lib/database";
 import type { Result } from "@/lib/result";
+import { generateUUID } from "@/utils/uuid";
 import type {
   FeasibilityResult,
   Flags,
@@ -44,7 +45,7 @@ export async function create(
 ): Promise<Result<FeasibilityResult>> {
   try {
     const db = getDatabase();
-    const id = crypto.randomUUID();
+    const id = generateUUID();
     const now = new Date().toISOString();
 
     await db.runAsync(

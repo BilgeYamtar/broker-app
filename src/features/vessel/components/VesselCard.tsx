@@ -3,6 +3,7 @@ import { Card } from "@/components/ui/Card";
 import { Badge } from "@/components/ui/Badge";
 import { StalenessIndicator } from "@/components/ui/StalenessIndicator";
 import { useI18n } from "@/lib/i18n";
+import { coastalNations } from "@/data/coastalNations";
 import type { Vessel } from "../vesselSchemas";
 
 interface VesselCardProps {
@@ -31,6 +32,9 @@ export function VesselCard({ vessel, onPress }: VesselCardProps) {
             className="text-maritime-white text-base font-semibold"
             numberOfLines={1}
           >
+            {vessel.flag
+              ? `${coastalNations.find((n) => n.code === vessel.flag)?.flag ?? ""} `
+              : ""}
             {vessel.vesselName}
           </Text>
           <Text className="text-maritime-muted text-sm mt-1">

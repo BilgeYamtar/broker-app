@@ -1,5 +1,6 @@
 import { getDatabase } from "@/lib/database";
 import type { Result } from "@/lib/result";
+import { generateUUID } from "@/utils/uuid";
 import { cargoFormSchema, type Cargo, type CargoFormData } from "./cargoSchemas";
 
 interface CargoRow {
@@ -43,7 +44,7 @@ export async function createCargo(
 
   try {
     const db = getDatabase();
-    const id = crypto.randomUUID();
+    const id = generateUUID();
     const now = new Date().toISOString();
     const d = parsed.data;
 

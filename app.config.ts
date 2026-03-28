@@ -79,6 +79,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
           "Mevcut fotoğrafları gemi profillerine eklemek için galeri erişimi gereklidir.",
       },
     ],
+    "expo-sharing",
   ],
   experiments: {
     typedRoutes: true,

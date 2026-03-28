@@ -24,6 +24,7 @@ export async function seedDemoData(): Promise<void> {
       piClub: "Gard",
       vesselType: "Bulk Carrier",
       coatingType: "Epoxy",
+      flag: "TR",
     },
     true // isDemo
   );

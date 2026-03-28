@@ -65,7 +65,9 @@ export function CargoForm({ initialData, cargoId }: CargoFormProps) {
 
     const parsed = cargoFormSchema.safeParse(formData);
     if (!parsed.success) {
-      Alert.alert(t("common.error"), t("errors.validationFailed"));
+      const messages = parsed.error.issues.map((issue) => issue.message);
+      const unique = [...new Set(messages)];
+      Alert.alert(t("common.error"), unique.join("\n"));
       return;
     }
 

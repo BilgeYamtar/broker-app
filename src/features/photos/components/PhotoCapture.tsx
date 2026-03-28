@@ -2,6 +2,7 @@ import { useState } from "react";
 import { View, Text, Pressable, Alert } from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import { useI18n } from "@/lib/i18n";
+import { generateUUID } from "@/utils/uuid";
 import { compressPhoto, saveToDocumentDirectory } from "@/utils/photoUtils";
 import * as photoRepository from "../photoRepository";
 import type { Photo } from "../photoSchemas";
@@ -31,7 +32,7 @@ export function PhotoCapture({
       }
 
       // 2. Persist to documentDirectory
-      const fileName = `${Date.now()}_${crypto.randomUUID()}`;
+      const fileName = `${Date.now()}_${generateUUID()}`;
       const saved = saveToDocumentDirectory(compressed.data.uri, fileName);
       if (!saved.success) {
         Alert.alert(t("common.error"), t("errors.photoCaptureFailed"));

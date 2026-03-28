@@ -1,5 +1,6 @@
 import { getDatabase } from "@/lib/database";
 import type { Result } from "@/lib/result";
+import { generateUUID } from "@/utils/uuid";
 import {
   vesselFormSchema,
   type Vessel,
@@ -21,6 +22,7 @@ interface VesselRow {
   pi_club: string;
   vessel_type: string;
   coating_type: string;
+  flag: string | null;
   is_active: number;
   is_demo: number;
   created_at: string;
@@ -44,6 +46,7 @@ function rowToVessel(row: VesselRow): Vessel {
     piClub: row.pi_club as Vessel["piClub"],
     vesselType: row.vessel_type as Vessel["vesselType"],
     coatingType: row.coating_type as Vessel["coatingType"],
+    flag: row.flag ?? null,
     isActive: row.is_active === 1,
     isDemo: row.is_demo === 1,
     createdAt: row.created_at,
@@ -62,14 +65,14 @@ export async function createVessel(
 
   try {
     const db = getDatabase();
-    const id = crypto.randomUUID();
+    const id = generateUUID();
     const now = new Date().toISOString();
     const d = parsed.data;
 
     await db.runAsync(
-      `INSERT INTO vessels (id, vessel_name, imo_number, built_year, dwt_capacity, length_m, beam_m, depth_m, gross_tonnage, net_tonnage, classification_society, pi_club, vessel_type, coating_type, is_active, is_demo, created_at, updated_at)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
-      [id, d.vesselName, d.imoNumber, d.builtYear, d.dwtCapacity, d.lengthM, d.beamM, d.depthM, d.grossTonnage, d.netTonnage, d.classificationSociety, d.piClub, d.vesselType, d.coatingType, 1, isDemo ? 1 : 0, now, now]
+      `INSERT INTO vessels (id, vessel_name, imo_number, built_year, dwt_capacity, length_m, beam_m, depth_m, gross_tonnage, net_tonnage, classification_society, pi_club, vessel_type, coating_type, flag, is_active, is_demo, created_at, updated_at)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+      [id, d.vesselName, d.imoNumber, d.builtYear, d.dwtCapacity, d.lengthM, d.beamM, d.depthM, d.grossTonnage, d.netTonnage, d.classificationSociety, d.piClub, d.vesselType, d.coatingType, d.flag ?? null, 1, isDemo ? 1 : 0, now, now]
     );
 
     const vessel: Vessel = {
@@ -87,6 +90,7 @@ export async function createVessel(
       piClub: d.piClub,
       vesselType: d.vesselType,
       coatingType: d.coatingType,
+      flag: d.flag ?? null,
       isActive: true,
       isDemo: isDemo,
       createdAt: now,
@@ -154,9 +158,9 @@ export async function updateVessel(
     const d = parsed.data;
 
     const result = await db.runAsync(
-      `UPDATE vessels SET vessel_name = ?, imo_number = ?, built_year = ?, dwt_capacity = ?, length_m = ?, beam_m = ?, depth_m = ?, gross_tonnage = ?, net_tonnage = ?, classification_society = ?, pi_club = ?, vessel_type = ?, coating_type = ?, updated_at = ?
+      `UPDATE vessels SET vessel_name = ?, imo_number = ?, built_year = ?, dwt_capacity = ?, length_m = ?, beam_m = ?, depth_m = ?, gross_tonnage = ?, net_tonnage = ?, classification_society = ?, pi_club = ?, vessel_type = ?, coating_type = ?, flag = ?, updated_at = ?
        WHERE id = ?`,
-      [d.vesselName, d.imoNumber, d.builtYear, d.dwtCapacity, d.lengthM, d.beamM, d.depthM, d.grossTonnage, d.netTonnage, d.classificationSociety, d.piClub, d.vesselType, d.coatingType, now, id]
+      [d.vesselName, d.imoNumber, d.builtYear, d.dwtCapacity, d.lengthM, d.beamM, d.depthM, d.grossTonnage, d.netTonnage, d.classificationSociety, d.piClub, d.vesselType, d.coatingType, d.flag ?? null, now, id]
     );
 
     if (result.changes === 0) {

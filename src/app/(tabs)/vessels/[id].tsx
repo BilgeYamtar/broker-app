@@ -44,6 +44,7 @@ export default function VesselDetailScreen() {
           piClub: v.piClub,
           vesselType: v.vesselType,
           coatingType: v.coatingType,
+          flag: v.flag,
         });
       } else {
         Alert.alert(t("common.error"), t("errors.loadFailed"));

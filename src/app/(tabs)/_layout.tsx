@@ -59,6 +59,16 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="route"
+        options={{
+          title: t("tabs.route"),
+          tabBarLabel: t("tabs.route"),
+          tabBarIcon: ({ color }) => (
+            <TabIcon name="navigate-outline" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: t("settings.title"),

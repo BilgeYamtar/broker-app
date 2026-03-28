@@ -1,5 +1,6 @@
 import { getDatabase } from "@/lib/database";
 import type { Result } from "@/lib/result";
+import { generateUUID } from "@/utils/uuid";
 import {
   brokerNoteFormSchema,
   type BrokerNote,
@@ -41,7 +42,7 @@ export async function createBrokerNote(
 
   try {
     const db = getDatabase();
-    const id = crypto.randomUUID();
+    const id = generateUUID();
     const now = new Date().toISOString();
     const d = parsed.data;
 
