@@ -294,6 +294,38 @@ export default function RoutePlanningScreen() {
                 />
               </View>
 
+              {/* Stowage & Volume Calculator */}
+              <View className="mb-4">
+                <Button
+                  label={t("stowage.openButton")}
+                  onPress={() => {
+                    router.push({
+                      pathname: "/route/stowage" as RelativePathString,
+                    });
+                  }}
+                  variant="secondary"
+                  fullWidth
+                />
+              </View>
+
+              {/* Freight Calculator */}
+              <View className="mb-4">
+                <Button
+                  label={t("freight.openButton")}
+                  onPress={() => {
+                    const days = result.durationHours / 24;
+                    router.push({
+                      pathname: "/route/freight" as RelativePathString,
+                      params: {
+                        voyageDays: String(Math.round(days * 100) / 100),
+                      },
+                    });
+                  }}
+                  variant="secondary"
+                  fullWidth
+                />
+              </View>
+
               {/* Disclaimer */}
               <View className="items-center py-4 mb-8">
                 <Text className="text-maritime-muted text-xs text-center">
@@ -301,6 +333,32 @@ export default function RoutePlanningScreen() {
                 </Text>
               </View>
             </>
+          )}
+
+          {/* Tools — always accessible */}
+          {!result && (
+            <View className="gap-3 mb-4">
+              <Button
+                label={t("stowage.openButton")}
+                onPress={() => {
+                  router.push({
+                    pathname: "/route/stowage" as RelativePathString,
+                  });
+                }}
+                variant="secondary"
+                fullWidth
+              />
+              <Button
+                label={t("freight.openButton")}
+                onPress={() => {
+                  router.push({
+                    pathname: "/route/freight" as RelativePathString,
+                  });
+                }}
+                variant="secondary"
+                fullWidth
+              />
+            </View>
           )}
 
           {/* Empty state */}

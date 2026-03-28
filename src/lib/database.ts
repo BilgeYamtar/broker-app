@@ -110,6 +110,22 @@ function createTables(db: SQLite.SQLiteDatabase): void {
   `);
 
   db.execSync(`
+    CREATE TABLE IF NOT EXISTS charter_parties (
+      id TEXT PRIMARY KEY NOT NULL,
+      template_id TEXT NOT NULL,
+      title TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'draft',
+      vessel_id TEXT,
+      cargo_id TEXT,
+      field_data TEXT NOT NULL DEFAULT '{}',
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (vessel_id) REFERENCES vessels(id) ON DELETE SET NULL,
+      FOREIGN KEY (cargo_id) REFERENCES cargoes(id) ON DELETE SET NULL
+    );
+  `);
+
+  db.execSync(`
     CREATE TABLE IF NOT EXISTS documents (
       id TEXT PRIMARY KEY NOT NULL,
       template_id TEXT NOT NULL,
@@ -144,6 +160,10 @@ function createIndexes(db: SQLite.SQLiteDatabase): void {
 
   db.execSync(`CREATE INDEX IF NOT EXISTS idx_photos_vessel_id ON photos(vessel_id);`);
   db.execSync(`CREATE INDEX IF NOT EXISTS idx_photos_broker_note_id ON photos(broker_note_id);`);
+
+  db.execSync(`CREATE INDEX IF NOT EXISTS idx_charter_parties_template_id ON charter_parties(template_id);`);
+  db.execSync(`CREATE INDEX IF NOT EXISTS idx_charter_parties_status ON charter_parties(status);`);
+  db.execSync(`CREATE INDEX IF NOT EXISTS idx_charter_parties_vessel_id ON charter_parties(vessel_id);`);
 
   db.execSync(`CREATE INDEX IF NOT EXISTS idx_documents_template_id ON documents(template_id);`);
   db.execSync(`CREATE INDEX IF NOT EXISTS idx_documents_vessel_id ON documents(vessel_id);`);
