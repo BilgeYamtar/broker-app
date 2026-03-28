@@ -69,6 +69,16 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="documents"
+        options={{
+          title: t("documents.title"),
+          tabBarLabel: t("documents.tabLabel"),
+          tabBarIcon: ({ color }) => (
+            <TabIcon name="document-text-outline" color={color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
         name="settings"
         options={{
           title: t("settings.title"),

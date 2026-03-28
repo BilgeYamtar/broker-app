@@ -3,7 +3,8 @@
     "cargo": "Kargo",
     "vessels": "Gemiler",
     "feasibility": "Fizibilite",
-    "route": "Rota"
+    "route": "Rota",
+    "documents": "Belgeler"
   },
   "common": {
     "save": "Kaydet",
@@ -256,6 +257,26 @@
     "incompatible": "Uyumsuz Yükler",
     "placardInfo": "Placard / Etiket Bilgisi",
     "holdPreparation": "Ambar Hazırlığı"
+  },
+  "documents": {
+    "title": "Belgeler",
+    "tabLabel": "Belgeler",
+    "subtitle": "Denizcilik belge şablonları",
+    "preArrival": "Varış Öncesi Belgeler",
+    "postVoyage": "Sefer Sonrası Belgeler",
+    "checklists": "Liman Kontrol Listeleri",
+    "newDoc": "Yeni",
+    "editDoc": "Belge Düzenle",
+    "saved": "Kayıtlı",
+    "autoFill": "Otomatik Doldurma",
+    "selectVessel": "Gemi Seçin",
+    "selectCargo": "Yük Seçin",
+    "share": "Belgeyi Paylaş",
+    "details": "Belge Detayları",
+    "completed": "tamamlandı",
+    "lastUpdated": "Son güncelleme",
+    "generatedBy": "Yük Portföyü ile oluşturuldu",
+    "noDocuments": "Henüz belge kaydedilmedi"
   },
   "settings": {
     "title": "Ayarlar",

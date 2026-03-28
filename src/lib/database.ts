@@ -108,6 +108,22 @@ function createTables(db: SQLite.SQLiteDatabase): void {
       FOREIGN KEY (broker_note_id) REFERENCES broker_notes(id) ON DELETE CASCADE
     );
   `);
+
+  db.execSync(`
+    CREATE TABLE IF NOT EXISTS documents (
+      id TEXT PRIMARY KEY NOT NULL,
+      template_id TEXT NOT NULL,
+      title TEXT NOT NULL,
+      vessel_id TEXT,
+      cargo_id TEXT,
+      field_data TEXT NOT NULL DEFAULT '{}',
+      checklist_data TEXT NOT NULL DEFAULT '{}',
+      created_at TEXT NOT NULL,
+      updated_at TEXT NOT NULL,
+      FOREIGN KEY (vessel_id) REFERENCES vessels(id) ON DELETE SET NULL,
+      FOREIGN KEY (cargo_id) REFERENCES cargoes(id) ON DELETE SET NULL
+    );
+  `);
 }
 
 function createIndexes(db: SQLite.SQLiteDatabase): void {
@@ -128,6 +144,10 @@ function createIndexes(db: SQLite.SQLiteDatabase): void {
 
   db.execSync(`CREATE INDEX IF NOT EXISTS idx_photos_vessel_id ON photos(vessel_id);`);
   db.execSync(`CREATE INDEX IF NOT EXISTS idx_photos_broker_note_id ON photos(broker_note_id);`);
+
+  db.execSync(`CREATE INDEX IF NOT EXISTS idx_documents_template_id ON documents(template_id);`);
+  db.execSync(`CREATE INDEX IF NOT EXISTS idx_documents_vessel_id ON documents(vessel_id);`);
+  db.execSync(`CREATE INDEX IF NOT EXISTS idx_documents_cargo_id ON documents(cargo_id);`);
 }
 
 function runMigrations(db: SQLite.SQLiteDatabase): void {
