@@ -92,6 +92,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     policy: "appVersion",
   },
   extra: {
+    revenueCatApiKey: "test_zSZpPGGidGDNjDRqjugdthlmbiC",
     eas: {
       projectId: "c7296099-246c-4dac-8fdd-93c5513bd211",
     },

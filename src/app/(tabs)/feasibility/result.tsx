@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { View, Text, ScrollView, Alert } from "react-native";
-import { useLocalSearchParams } from "expo-router";
+import { useLocalSearchParams, useRouter, type RelativePathString } from "expo-router";
 import { ScreenContainer } from "@/components/layout/ScreenContainer";
 import { Header } from "@/components/layout/Header";
 import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
@@ -17,6 +17,8 @@ import { ComplianceChecklist } from "@/features/feasibility/components/Complianc
 import { AcknowledgmentGate } from "@/features/feasibility/components/AcknowledgmentGate";
 import { DisclaimerFooter } from "@/features/feasibility/components/DisclaimerFooter";
 import { shareReportAsPdf, shareReportAsText, type ReportData } from "@/services/reportExportService";
+import { useSubscriptionStore } from "@/features/subscription/useSubscriptionStore";
+import { PremiumBadge } from "@/features/subscription/PremiumBadge";
 import type { FeasibilityResult } from "@/features/feasibility/feasibilitySchemas";
 import type { Vessel } from "@/features/vessel/vesselSchemas";
 import type { Cargo } from "@/features/cargo/cargoSchemas";
@@ -33,6 +35,8 @@ interface PairContext {
 export default function FeasibilityResultScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { t } = useI18n();
+  const router = useRouter();
+  const isPremium = useSubscriptionStore((s) => s.isPremium);
   const [result, setResult] = useState<FeasibilityResult | null>(null);
   const [context, setContext] = useState<PairContext | null>(null);
   const [vesselData, setVesselData] = useState<Vessel | null>(null);
@@ -137,6 +141,10 @@ export default function FeasibilityResultScreen() {
   }, [result, vesselData, cargoData, t]);
 
   const handleExportPdf = useCallback(async () => {
+    if (!isPremium) {
+      router.push("/paywall" as RelativePathString);
+      return;
+    }
     const data = buildReportData();
     if (!data) {
       Alert.alert(t("common.error"), t("feasibility.exportFailed"));
@@ -150,7 +158,7 @@ export default function FeasibilityResultScreen() {
     } finally {
       setExportingPdf(false);
     }
-  }, [buildReportData, t]);
+  }, [buildReportData, t, isPremium, router]);
 
   const handleExportText = useCallback(async () => {
     const data = buildReportData();
@@ -276,6 +284,9 @@ export default function FeasibilityResultScreen() {
 
           {/* Export actions */}
           <View className="mb-4 mt-2">
+            <View className="flex-row items-center justify-center mb-1">
+              <PremiumBadge compact />
+            </View>
             <Button
               label={t("feasibility.exportPdf")}
               onPress={handleExportPdf}

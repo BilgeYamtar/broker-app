@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useMemo } from "react";
-import { View, Text } from "react-native";
-import { useRouter } from "expo-router";
+import { View, Text, Alert } from "react-native";
+import { useRouter, type RelativePathString } from "expo-router";
 import { FlashList } from "@shopify/flash-list";
 import { ScreenContainer } from "@/components/layout/ScreenContainer";
 import { Header } from "@/components/layout/Header";
@@ -11,6 +11,7 @@ import { FilterSelect } from "@/components/ui/FilterSelect";
 import { useI18n } from "@/lib/i18n";
 import { useVesselStore } from "@/features/vessel/useVesselStore";
 import { useVesselFilters } from "@/features/vessel/useVesselFilters";
+import { useSubscriptionStore } from "@/features/subscription/useSubscriptionStore";
 import { VesselCard } from "@/features/vessel/components/VesselCard";
 import { vesselTypes } from "@/data/vesselTypes";
 import type { Vessel } from "@/features/vessel/vesselSchemas";
@@ -23,6 +24,7 @@ export default function VesselsScreen() {
   const vessels = useVesselStore((s) => s.vessels);
   const isLoading = useVesselStore((s) => s.isLoading);
   const loadVessels = useVesselStore((s) => s.loadVessels);
+  const canAddVessel = useSubscriptionStore((s) => s.canAddVessel);
 
   const {
     filters,
@@ -81,7 +83,13 @@ export default function VesselsScreen() {
           subtitle={t("vessels.subtitle")}
           rightAction={{
             label: t("vessels.newVessel"),
-            onPress: () => router.push("/vessels/new"),
+            onPress: () => {
+              if (!canAddVessel(vessels.filter((v) => !v.isDemo).length)) {
+                router.push("/paywall" as RelativePathString);
+                return;
+              }
+              router.push("/vessels/new");
+            },
           }}
         />
         {isLoading ? (

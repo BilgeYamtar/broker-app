@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { useI18n } from "@/lib/i18n";
+import { usePaywall } from "@/features/subscription/usePaywall";
+import { PremiumBadge } from "@/features/subscription/PremiumBadge";
 import { PortPicker } from "@/features/route/components/PortPicker";
 import { calculateRoute, type Port } from "@/services/portService";
 import {
@@ -31,6 +33,7 @@ function formatDuration(hours: number): string {
 export default function RoutePlanningScreen() {
   const { t } = useI18n();
   const router = useRouter();
+  const { requirePremium } = usePaywall();
 
   const [originPort, setOriginPort] = useState<Port | null>(null);
   const [destinationPort, setDestinationPort] = useState<Port | null>(null);
@@ -280,14 +283,16 @@ export default function RoutePlanningScreen() {
                 <Button
                   label={t("prevoyage.openButton")}
                   onPress={() => {
-                    router.push({
-                      pathname: "/route/prevoyage" as RelativePathString,
-                      params: {
-                        distance: String(result.distanceNm),
-                        origin: originPort?.name ?? "",
-                        destination: destinationPort?.name ?? "",
-                      },
-                    });
+                    requirePremium(() =>
+                      router.push({
+                        pathname: "/route/prevoyage" as RelativePathString,
+                        params: {
+                          distance: String(result.distanceNm),
+                          origin: originPort?.name ?? "",
+                          destination: destinationPort?.name ?? "",
+                        },
+                      })
+                    );
                   }}
                   variant="secondary"
                   fullWidth
@@ -299,9 +304,11 @@ export default function RoutePlanningScreen() {
                 <Button
                   label={t("stowage.openButton")}
                   onPress={() => {
-                    router.push({
-                      pathname: "/route/stowage" as RelativePathString,
-                    });
+                    requirePremium(() =>
+                      router.push({
+                        pathname: "/route/stowage" as RelativePathString,
+                      })
+                    );
                   }}
                   variant="secondary"
                   fullWidth
@@ -313,12 +320,14 @@ export default function RoutePlanningScreen() {
                 <Button
                   label={t("freight.openButton")}
                   onPress={() => {
-                    const days = result.durationHours / 24;
-                    router.push({
-                      pathname: "/route/freight" as RelativePathString,
-                      params: {
-                        voyageDays: String(Math.round(days * 100) / 100),
-                      },
+                    requirePremium(() => {
+                      const days = result.durationHours / 24;
+                      router.push({
+                        pathname: "/route/freight" as RelativePathString,
+                        params: {
+                          voyageDays: String(Math.round(days * 100) / 100),
+                        },
+                      });
                     });
                   }}
                   variant="secondary"
@@ -341,9 +350,11 @@ export default function RoutePlanningScreen() {
               <Button
                 label={t("stowage.openButton")}
                 onPress={() => {
-                  router.push({
-                    pathname: "/route/stowage" as RelativePathString,
-                  });
+                  requirePremium(() =>
+                    router.push({
+                      pathname: "/route/stowage" as RelativePathString,
+                    })
+                  );
                 }}
                 variant="secondary"
                 fullWidth
@@ -351,9 +362,11 @@ export default function RoutePlanningScreen() {
               <Button
                 label={t("freight.openButton")}
                 onPress={() => {
-                  router.push({
-                    pathname: "/route/freight" as RelativePathString,
-                  });
+                  requirePremium(() =>
+                    router.push({
+                      pathname: "/route/freight" as RelativePathString,
+                    })
+                  );
                 }}
                 variant="secondary"
                 fullWidth

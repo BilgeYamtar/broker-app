@@ -7,6 +7,8 @@ import { Header } from "@/components/layout/Header";
 import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
 import { Card } from "@/components/ui/Card";
 import { useI18n } from "@/lib/i18n";
+import { usePaywall } from "@/features/subscription/usePaywall";
+import { PremiumBadge } from "@/features/subscription/PremiumBadge";
 import {
   getTemplatesByCategory,
   type DocumentCategory,
@@ -32,6 +34,7 @@ const CATEGORIES: { key: DocumentCategory; iconLabel: string }[] = [
 export default function DocumentsScreen() {
   const { t, locale } = useI18n();
   const router = useRouter();
+  const { isPremium, requirePremium } = usePaywall();
   const [savedDocs, setSavedDocs] = useState<SavedDocument[]>([]);
   const [savedCps, setSavedCps] = useState<SavedCharterParty[]>([]);
 
@@ -148,18 +151,23 @@ export default function DocumentsScreen() {
                   <Card>
                     <Pressable
                       onPress={() =>
-                        router.push({
-                          pathname: "/documents/cp-form" as RelativePathString,
-                          params: { templateId: cpTemplate.id },
-                        })
+                        requirePremium(() =>
+                          router.push({
+                            pathname: "/documents/cp-form" as RelativePathString,
+                            params: { templateId: cpTemplate.id },
+                          })
+                        )
                       }
                       className="min-h-[44px]"
                     >
                       <View className="flex-row items-center justify-between">
                         <View className="flex-1 mr-3">
-                          <Text className="text-maritime-white text-base font-semibold">
-                            {cpTemplate.code}
-                          </Text>
+                          <View className="flex-row items-center">
+                            <Text className="text-maritime-white text-base font-semibold">
+                              {cpTemplate.code}
+                            </Text>
+                            <PremiumBadge compact />
+                          </View>
                           <Text className="text-maritime-muted text-sm mt-0.5">
                             {locale === "tr"
                               ? cpTemplate.nameTr
@@ -245,10 +253,12 @@ export default function DocumentsScreen() {
                       <Card>
                         <Pressable
                           onPress={() =>
-                            router.push({
-                              pathname: "/documents/form" as RelativePathString,
-                              params: { templateId: template.id },
-                            })
+                            requirePremium(() =>
+                              router.push({
+                                pathname: "/documents/form" as RelativePathString,
+                                params: { templateId: template.id },
+                              })
+                            )
                           }
                           className="min-h-[44px]"
                         >
@@ -257,6 +267,7 @@ export default function DocumentsScreen() {
                               <Text className="text-maritime-white text-base font-semibold">
                                 {template.abbreviation}
                               </Text>
+                              <PremiumBadge compact />
                               <Text className="text-maritime-muted text-sm mt-0.5">
                                 {locale === "tr"
                                   ? template.nameTr

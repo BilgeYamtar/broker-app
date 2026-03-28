@@ -1,6 +1,6 @@
 import { useEffect, useCallback, useMemo } from "react";
 import { View, Text, Pressable } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, type RelativePathString } from "expo-router";
 import { FlashList } from "@shopify/flash-list";
 import { ScreenContainer } from "@/components/layout/ScreenContainer";
 import { Header } from "@/components/layout/Header";
@@ -11,6 +11,9 @@ import { FilterSelect } from "@/components/ui/FilterSelect";
 import { useI18n } from "@/lib/i18n";
 import { useCargoStore } from "@/features/cargo/useCargoStore";
 import { useCargoFilters } from "@/features/cargo/useCargoFilters";
+import { useSubscriptionStore } from "@/features/subscription/useSubscriptionStore";
+import { usePaywall } from "@/features/subscription/usePaywall";
+import { PremiumBadge } from "@/features/subscription/PremiumBadge";
 import { CargoCard } from "@/features/cargo/components/CargoCard";
 import { cargoTypes } from "@/data/cargoTypes";
 import { hazardClasses } from "@/data/hazardClasses";
@@ -25,6 +28,8 @@ export default function CargoScreen() {
   const cargoes = useCargoStore((s) => s.cargoes);
   const isLoading = useCargoStore((s) => s.isLoading);
   const loadCargoes = useCargoStore((s) => s.loadCargoes);
+  const canAddCargo = useSubscriptionStore((s) => s.canAddCargo);
+  const { requirePremium } = usePaywall();
 
   const {
     filters,
@@ -78,12 +83,13 @@ export default function CargoScreen() {
           />
         </View>
         <Pressable
-          onPress={() => router.push("/cargo/imdg")}
+          onPress={() => requirePremium(() => router.push("/cargo/imdg"))}
           className="mt-2 flex-row items-center justify-center rounded-lg border border-maritime-border bg-maritime-surface py-2.5 px-3"
         >
           <Text className="text-maritime-teal text-xs font-medium">
             {"\u2622\uFE0F"} {t("imdg.guideButton")}
           </Text>
+          <PremiumBadge compact />
         </Pressable>
       </View>
     ),
@@ -98,7 +104,13 @@ export default function CargoScreen() {
           subtitle={t("cargo.subtitle")}
           rightAction={{
             label: t("cargo.newCargo"),
-            onPress: () => router.push("/cargo/new"),
+            onPress: () => {
+              if (!canAddCargo(cargoes.filter((c) => !c.isDemo).length)) {
+                router.push("/paywall" as RelativePathString);
+                return;
+              }
+              router.push("/cargo/new");
+            },
           }}
         />
         {isLoading ? (

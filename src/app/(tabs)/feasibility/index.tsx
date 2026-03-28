@@ -1,6 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { View, Text, Alert } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, type RelativePathString } from "expo-router";
 import { ScreenContainer } from "@/components/layout/ScreenContainer";
 import { Header } from "@/components/layout/Header";
 import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
@@ -9,6 +9,7 @@ import { useI18n } from "@/lib/i18n";
 import { useCargoStore } from "@/features/cargo/useCargoStore";
 import { useVesselStore } from "@/features/vessel/useVesselStore";
 import { useFeasibilityStore } from "@/features/feasibility/useFeasibilityStore";
+import { useSubscriptionStore } from "@/features/subscription/useSubscriptionStore";
 import { CargoVesselSelector } from "@/features/feasibility/components/CargoVesselSelector";
 import { runFeasibility } from "@/services/feasibilityService";
 import type { FeasibilityRule, MessageFormatter } from "@/services/feasibilityService";
@@ -19,6 +20,9 @@ const typedRules = rules as FeasibilityRule[];
 export default function FeasibilityScreen() {
   const { t } = useI18n();
   const router = useRouter();
+  const canRunFeasibility = useSubscriptionStore((s) => s.canRunFeasibility);
+  const recordFeasibilityRun = useSubscriptionStore((s) => s.recordFeasibilityRun);
+  const isPremium = useSubscriptionStore((s) => s.isPremium);
 
   const cargoes = useCargoStore((s) => s.cargoes);
   const loadCargoes = useCargoStore((s) => s.loadCargoes);
@@ -39,6 +43,11 @@ export default function FeasibilityScreen() {
 
   const handleRun = useCallback(async () => {
     if (!selectedCargoId || !selectedVesselId) return;
+
+    if (!canRunFeasibility()) {
+      router.push("/paywall" as RelativePathString);
+      return;
+    }
 
     const cargo = cargoes.find((c) => c.id === selectedCargoId);
     const vessel = vessels.find((v) => v.id === selectedVesselId);
@@ -98,9 +107,12 @@ export default function FeasibilityScreen() {
       return;
     }
 
-    // 3. Navigate to result screen
+    // 3. Record the run for daily limit tracking
+    recordFeasibilityRun();
+
+    // 4. Navigate to result screen
     router.push(`/feasibility/result?id=${saveRes.data.id}`);
-  }, [selectedCargoId, selectedVesselId, cargoes, vessels, saveResult, router, t]);
+  }, [selectedCargoId, selectedVesselId, cargoes, vessels, saveResult, router, t, canRunFeasibility, recordFeasibilityRun]);
 
   return (
     <ErrorBoundary>

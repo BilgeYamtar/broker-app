@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390, initial-scale=1.0">
+<title>Yük Portföyü - Paywall Reference</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: #0a1628;
+    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+    color: #ffffff;
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+  }
+
+  .phone-frame {
+    width: 390px;
+    min-height: 844px;
+    background: #0a1628;
+    border-radius: 44px;
+    border: 3px solid #1e293b;
+    overflow: hidden;
+    padding: 60px 24px 40px;
+    position: relative;
+  }
+
+  /* Status bar mock */
+  .status-bar {
+    position: absolute;
+    top: 16px;
+    left: 32px;
+    right: 32px;
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+  }
+
+  /* Back arrow */
+  .back-btn {
+    position: absolute;
+    top: 56px;
+    left: 20px;
+    color: #2dd4a8;
+    font-size: 20px;
+    padding: 8px;
+  }
+
+  /* Hero */
+  .hero {
+    text-align: center;
+    padding: 20px 0 24px;
+  }
+  .hero-name {
+    font-size: 26px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: -0.3px;
+  }
+  .hero-badge {
+    font-size: 20px;
+    font-weight: 700;
+    color: #f59e0b;
+    margin-top: 4px;
+  }
+  .hero-desc {
+    font-size: 14px;
+    color: #6b7280;
+    margin-top: 10px;
+    line-height: 1.5;
+    padding: 0 16px;
+  }
+
+  /* Period toggle */
+  .toggle-row {
+    display: flex;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid #1e293b;
+    margin-bottom: 20px;
+  }
+  .toggle-btn {
+    flex: 1;
+    text-align: center;
+    padding: 14px 8px;
+    cursor: pointer;
+    transition: background 0.2s;
+    position: relative;
+  }
+  .toggle-btn.active {
+    background: #2dd4a8;
+  }
+  .toggle-btn:not(.active) {
+    background: #111d2e;
+  }
+  .toggle-label {
+    font-size: 14px;
+    font-weight: 600;
+  }
+  .toggle-btn.active .toggle-label { color: #0a1628; }
+  .toggle-btn:not(.active) .toggle-label { color: #6b7280; }
+  .toggle-price {
+    font-size: 12px;
+    margin-top: 2px;
+  }
+  .toggle-btn.active .toggle-price { color: #0a1628; }
+  .toggle-btn:not(.active) .toggle-price { color: #6b7280; }
+  .save-badge {
+    background: #f59e0b;
+    color: #0a1628;
+    font-size: 10px;
+    font-weight: 800;
+    border-radius: 20px;
+    padding: 2px 8px;
+    display: inline-block;
+    margin-top: 4px;
+  }
+
+  /* Features card */
+  .card {
+    background: #111d2e;
+    border-radius: 16px;
+    border: 1px solid #1e293b;
+    padding: 20px;
+    margin-bottom: 16px;
+  }
+  .card-title {
+    font-size: 11px;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 14px;
+    font-weight: 600;
+  }
+  .feature-row {
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    border-bottom: 1px solid rgba(30, 41, 59, 0.6);
+  }
+  .feature-row:last-child {
+    border-bottom: none;
+  }
+  .check {
+    color: #2dd4a8;
+    font-size: 15px;
+    font-weight: 600;
+    width: 24px;
+    flex-shrink: 0;
+  }
+  .cross {
+    color: #ef4444;
+    font-size: 15px;
+    font-weight: 600;
+    width: 24px;
+    flex-shrink: 0;
+  }
+  .feature-text {
+    font-size: 14px;
+    color: #fff;
+    flex: 1;
+  }
+  .feature-text.muted {
+    color: #6b7280;
+  }
+
+  /* CTA */
+  .cta-btn {
+    width: 100%;
+    padding: 16px;
+    border-radius: 14px;
+    background: #2dd4a8;
+    border: none;
+    font-size: 16px;
+    font-weight: 700;
+    color: #0a1628;
+    cursor: pointer;
+    margin-bottom: 10px;
+    text-align: center;
+  }
+  .restore-btn {
+    width: 100%;
+    padding: 14px;
+    border-radius: 14px;
+    background: transparent;
+    border: none;
+    font-size: 14px;
+    font-weight: 500;
+    color: #6b7280;
+    cursor: pointer;
+    text-align: center;
+    margin-bottom: 16px;
+  }
+
+  /* Legal */
+  .legal {
+    font-size: 10px;
+    color: #4b5563;
+    text-align: center;
+    line-height: 1.6;
+    padding: 0 12px 8px;
+  }
+</style>
+</head>
+<body>
+<div class="phone-frame">
+
+  <!-- Status bar -->
+  <div class="status-bar">
+    <span>9:41</span>
+    <span>100%</span>
+  </div>
+
+  <!-- Back -->
+  <div class="back-btn">&larr;</div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-name">Yük Portföyü</div>
+    <div class="hero-badge">Premium</div>
+    <div class="hero-desc">Tüm profesyonel denizcilik araçlarına sınırsız erişim elde edin.</div>
+  </div>
+
+  <!-- Period toggle -->
+  <div class="toggle-row">
+    <div class="toggle-btn">
+      <div class="toggle-label">Aylık</div>
+      <div class="toggle-price">$9.99/ay</div>
+    </div>
+    <div class="toggle-btn active">
+      <div class="toggle-label">Yıllık</div>
+      <div class="toggle-price">$89.99/yıl</div>
+      <div class="save-badge">%25 TASARRUF</div>
+    </div>
+  </div>
+
+  <!-- Premium features -->
+  <div class="card">
+    <div class="card-title">Premium Özellikleri</div>
+
+    <div class="feature-row">
+      <span class="check">&#10003;</span>
+      <span class="feature-text">Sınırsız gemi & kargo profili</span>
+    </div>
+    <div class="feature-row">
+      <span class="check">&#10003;</span>
+      <span class="feature-text">PDF rapor dışa aktarma</span>
+    </div>
+    <div class="feature-row">
+      <span class="check">&#10003;</span>
+      <span class="feature-text">Belge şablonları (NOR, SOF, B/L)</span>
+    </div>
+    <div class="feature-row">
+      <span class="check">&#10003;</span>
+      <span class="feature-text">Charter Party yönetimi</span>
+    </div>
+    <div class="feature-row">
+      <span class="check">&#10003;</span>
+      <span class="feature-text">IMDG tehlikeli yük kılavuzu</span>
+    </div>
+    <div class="feature-row">
+      <span class="check">&#10003;</span>
+      <span class="feature-text">Pre-voyage & navlun hesaplama</span>
+    </div>
+    <div class="feature-row">
+      <span class="check">&#10003;</span>
+      <span class="feature-text">İstif & hacim hesaplama</span>
+    </div>
+    <div class="feature-row">
+      <span class="check">&#10003;</span>
+      <span class="feature-text">Sınırsız fizibilite analizi</span>
+    </div>
+    <div class="feature-row">
+      <span class="check">&#10003;</span>
+      <span class="feature-text">Öncelikli destek</span>
+    </div>
+  </div>
+
+  <!-- Free plan comparison -->
+  <div class="card">
+    <div class="card-title">Ücretsiz Plan</div>
+
+    <div class="feature-row">
+      <span class="check">&#10003;</span>
+      <span class="feature-text">3 gemi profili</span>
+    </div>
+    <div class="feature-row">
+      <span class="check">&#10003;</span>
+      <span class="feature-text">5 yük kaydı</span>
+    </div>
+    <div class="feature-row">
+      <span class="check">&#10003;</span>
+      <span class="feature-text">Günde 3 fizibilite analizi</span>
+    </div>
+    <div class="feature-row">
+      <span class="check">&#10003;</span>
+      <span class="feature-text">Temel rota planlama</span>
+    </div>
+    <div class="feature-row">
+      <span class="cross">&#10007;</span>
+      <span class="feature-text muted">PDF dışa aktarma</span>
+    </div>
+    <div class="feature-row">
+      <span class="cross">&#10007;</span>
+      <span class="feature-text muted">Denizcilik belgeleri</span>
+    </div>
+    <div class="feature-row">
+      <span class="cross">&#10007;</span>
+      <span class="feature-text muted">Charter Party (C/P)</span>
+    </div>
+    <div class="feature-row">
+      <span class="cross">&#10007;</span>
+      <span class="feature-text muted">Pre-voyage hesaplama</span>
+    </div>
+    <div class="feature-row">
+      <span class="cross">&#10007;</span>
+      <span class="feature-text muted">Navlun & İstif hesaplama</span>
+    </div>
+    <div class="feature-row">
+      <span class="cross">&#10007;</span>
+      <span class="feature-text muted">IMDG kılavuzu</span>
+    </div>
+  </div>
+
+  <!-- CTA -->
+  <div class="cta-btn">7 Günlük Ücretsiz Denemeyi Başlat</div>
+  <div class="restore-btn">Satın Alımları Geri Yükle</div>
+
+  <!-- Legal -->
+  <div class="legal">
+    Ödeme Apple/Google hesabınızdan yapılacaktır. Abonelik, mevcut süre bitiminden en az 24 saat önce iptal edilmediği sürece otomatik olarak yenilenir.
+  </div>
+
+</div>
+</body>
+</html>

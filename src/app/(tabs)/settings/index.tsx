@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { View, Text, Pressable, ScrollView } from "react-native";
+import { useRouter, type RelativePathString } from "expo-router";
 import { ScreenContainer } from "@/components/layout/ScreenContainer";
 import { Header } from "@/components/layout/Header";
 import { ErrorBoundary } from "@/components/layout/ErrorBoundary";
 import { Card } from "@/components/ui/Card";
 import { Button } from "@/components/ui/Button";
 import { useI18n, type Locale } from "@/lib/i18n";
+import { useSubscriptionStore } from "@/features/subscription/useSubscriptionStore";
 import {
   getPhotoStorageInfo,
   formatBytes,
@@ -27,6 +29,9 @@ interface DiagResult {
 
 export default function SettingsScreen() {
   const { t, locale, setLocale } = useI18n();
+  const router = useRouter();
+  const isPremium = useSubscriptionStore((s) => s.isPremium);
+  const expirationDate = useSubscriptionStore((s) => s.expirationDate);
   const [storageInfo, setStorageInfo] = useState<StorageInfo | null>(null);
   const [diagResults, setDiagResults] = useState<DiagResult[] | null>(null);
   const [diagRunning, setDiagRunning] = useState(false);
@@ -170,6 +175,43 @@ export default function SettingsScreen() {
                 </Pressable>
               ))}
             </View>
+          </Card>
+
+          {/* Subscription */}
+          <Card className="mb-4">
+            <Text className="text-maritime-muted text-xs uppercase tracking-widest mb-3">
+              {t("settings.subscription")}
+            </Text>
+            <View className="flex-row justify-between items-center mb-2">
+              <Text className="text-maritime-white text-sm">
+                {t("settings.currentPlan")}
+              </Text>
+              <Text className={`text-sm font-semibold ${isPremium ? "text-amber-400" : "text-maritime-muted"}`}>
+                {isPremium ? "Premium" : t("settings.freePlan")}
+              </Text>
+            </View>
+            {isPremium && expirationDate && (
+              <View className="flex-row justify-between items-center mb-2">
+                <Text className="text-maritime-white text-sm">
+                  {t("settings.expiresOn")}
+                </Text>
+                <Text className="text-maritime-muted text-sm">
+                  {new Date(expirationDate).toLocaleDateString(
+                    locale === "tr" ? "tr-TR" : "en-US"
+                  )}
+                </Text>
+              </View>
+            )}
+            {!isPremium && (
+              <View className="mt-2">
+                <Button
+                  label={t("settings.upgradePremium")}
+                  onPress={() => router.push("/paywall" as RelativePathString)}
+                  variant="primary"
+                  fullWidth
+                />
+              </View>
+            )}
           </Card>
 
           {storageInfo && (
